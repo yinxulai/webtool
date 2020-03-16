@@ -1,0 +1,73 @@
+@import '~react-pitaya/lib/styles/altitude.less';
+@import '~react-pitaya/lib/styles/gap.less';
+
+.avatar {
+    .altitude(0);
+    padding: 1px;
+    transition: .2s;
+    overflow: hidden;
+    border-radius: 50%;
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, .1);
+
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+
+    cursor: pointer;
+
+    img {
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    span {
+        z-index: 1;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        color: #777;
+        font-size: 10px;
+        font-weight: bold;
+        position: absolute;
+        background-color: rgba(255, 255, 255, .7);
+    }
+
+    input {
+        z-index: 2;
+    }
+}
+
+.avatar:hover {
+    .altitude(3);
+    span { opacity: 1; }
+}
+
+.hide {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    text-align: center;
+    position: absolute;
+}
+
+.avatar.small {
+    width: 30px;
+    height: 30px;
+}
+
+.avatar.normal {
+    width: 50px;
+    height: 50px;
+}
+
+.avatar.large {
+    width: 60px;
+    height: 60px;
+}
+

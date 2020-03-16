@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist",
+    "target": "es2017",
+    "module": "commonjs",
+    "isolatedModules": false,
+    "emitDecoratorMetadata": true
+  },
+  "include": ["server/*.ts", "server/**/*.ts", "server/**/*.js"]
+}
