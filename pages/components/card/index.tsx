@@ -14,17 +14,21 @@ export const Card = (props: Props) => {
 
   return (
     <Container className={[style.card]}>
+      {name}
+      {routePath}
+      {description}
+
       <div className={style.name}>
         <strong>{name}</strong>
       </div>
       <div className={style.description}>
         <b>{description}</b>
       </div>
-      {/* SEO 关键字 */}
+
       <div className={style.tags}>
-        {keywords.map(key => <div>{key}</div>)}
+        {keywords.map(key => <div key={key}>{key}</div>)}
       </div>
-      <Link href={routePath} />
+      <Link href={routePath} >进入</Link>
     </Container>
   )
 }

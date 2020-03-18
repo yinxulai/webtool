@@ -1,6 +1,5 @@
 import next from 'next'
 import 'reflect-metadata'
-import qs from 'querystring'
 import express from 'express'
 import session from './plugins/session'
 import Account from './controller/account'
@@ -21,11 +20,11 @@ nextServer.prepare().then(() => {
   const pages = express.Router()
 
   pages.get('/', async (req, res) => {
-    res.redirect(`/signin?${qs.stringify(req.query)}`)
+    await nextServer.render(req, res, '/', req.query)
   })
 
-  pages.get('/signin', async (req, res) => {
-    await nextServer.render(req, res, '/signin', req.query)
+  pages.get('/test', async (req, res) => {
+    await nextServer.render(req, res, '/test', req.query)
   })
 
   pages.get('/signup', async (req, res) => {

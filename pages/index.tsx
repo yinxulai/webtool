@@ -11,7 +11,10 @@ export default class Index extends React.Component {
           <Navbar />
         </div>
         <div className={styles.applications}>
-          {apps.map(app => <Card {...app} />)}
+          {apps.map(
+            app =>
+              <Card key={app.name} {...app} />
+          )}
         </div>
       </div>
     )
