@@ -38,9 +38,9 @@ export default class MobxApp extends App<IMobxAppProps, IMobxAppState> {
 
     return (
       <div id={styles.root}>
-        <Component {...pageProps} />
         <Overlay />
         <Toaster />
+        <Component {...pageProps} />
       </div>
     )
   }

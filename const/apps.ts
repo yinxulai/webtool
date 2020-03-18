@@ -14,5 +14,5 @@ interface App {
 }
 
 export const apps: App[] = [
-  
+
 ]

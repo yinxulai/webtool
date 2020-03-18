@@ -1,23 +1,19 @@
 import React from 'react'
-import Link from 'next/link'
-
+import styles from './style.less'
+import { apps } from '../const/apps'
+import { Card } from './components/card'
+import { Navbar } from './components/navbar'
 export default class Index extends React.Component {
   render() {
     return (
-      <>
-        <Link href="/signin" >
-          <a>signin</a>
-        </Link>
-        <Link href="/signup">
-          <a>signup</a>
-        </Link>
-        <Link href="/profile">
-          <a>profile</a>
-        </Link>
-        <Link href="/playground">
-          <a>playground</a>
-        </Link>
-      </>
+      <div className={styles.index}>
+        <div className={styles.navbar}>
+          <Navbar />
+        </div>
+        <div className={styles.applications}>
+          {apps.map(app => <Card {...app} />)}
+        </div>
+      </div>
     )
   }
 }
