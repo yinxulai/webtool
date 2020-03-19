@@ -23,16 +23,8 @@ nextServer.prepare().then(() => {
     await nextServer.render(req, res, '/', req.query)
   })
 
-  pages.get('/test', async (req, res) => {
-    await nextServer.render(req, res, '/test', req.query)
-  })
-
-  pages.get('/signup', async (req, res) => {
-    await nextServer.render(req, res, '/signup', req.query)
-  })
-
-  pages.get('/playground', async (req, res) => {
-    await nextServer.render(req, res, '/playground', req.query)
+  pages.get('/applications/:name', async (req, res) => {
+    await nextServer.render(req, res, '/applications', req.query)
   })
 
   pages.get('*', async (req, res) => {

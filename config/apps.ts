@@ -25,8 +25,16 @@ export const apps: App[] = [
     render: Timestamp
   },
   {
-    sort: 1, // 排序
-    name: '时间戳转换', //名称
+    sort: 2, // 排序
+    name: '加密解密', //名称
+    keywords: [], // 功能关键字
+    routePath: '/applications/encryption', // 路由
+    description: "时间戳", // 说明
+    render: Encryption
+  },
+  {
+    sort: 2, // 排序
+    name: '应用', //名称
     keywords: [], // 功能关键字
     routePath: '/applications/encryption', // 路由
     description: "时间戳", // 说明

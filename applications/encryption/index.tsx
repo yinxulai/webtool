@@ -6,6 +6,7 @@ export default function (props: AppProps) {
   console.log(props)
   return (
     <Container>
+        加密
     </Container>
   )
 }
