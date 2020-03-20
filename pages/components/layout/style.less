@@ -1,0 +1,28 @@
+@import "~react-pitaya/lib/styles/gap.less";
+
+@max-width: 1200px;
+@min-width: 900px;
+
+.layout {
+  width: 100%;
+  background-color: white;
+
+  .content {
+    margin: 0 auto;
+    min-width: @min-width;
+    max-width: @max-width;
+    border: 1px solid red;
+    padding: .gap-padding-all(2);
+  }
+
+  .recommendedBooth {
+    width: 100%;
+    padding: 20px;
+    background-color: #f6f6f6;
+  }
+
+  .comment {
+    min-width: @min-width;
+    max-width: @max-width;
+  }
+}

@@ -14,10 +14,6 @@ export const Card = (props: Props) => {
 
   return (
     <Container className={[style.card]}>
-      {name}
-      {routePath}
-      {description}
-
       <div className={style.name}>
         <strong>{name}</strong>
       </div>
@@ -28,7 +24,11 @@ export const Card = (props: Props) => {
       <div className={style.tags}>
         {keywords.map(key => <div key={key}>{key}</div>)}
       </div>
-      <Link href={routePath} >进入</Link>
+
+      <Link href={routePath}>
+        <a className={style.link}>进入</a>
+      </Link>
+
     </Container>
   )
 }

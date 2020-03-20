@@ -7,6 +7,7 @@ import { isDevelop } from '../utils/node'
 import currentUser from './plugins/currentUser'
 import { useExpressServer } from 'routing-controllers'
 
+
 const server = express()
 const isDev = isDevelop()
 const nextServer = next({ dev: isDev })
@@ -24,7 +25,9 @@ nextServer.prepare().then(() => {
   })
 
   pages.get('/applications/:name', async (req, res) => {
-    await nextServer.render(req, res, '/applications', req.query)
+    const appName = req.param('name', null)
+    if (!appName) { res.redirect('/') }
+    else { await nextServer.render(req, res, `/applications/${appName}`, req.query) }
   })
 
   pages.get('*', async (req, res) => {

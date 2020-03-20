@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './style.less'
-import { apps } from '../const/apps'
+import { apps } from '../config/apps'
 import { Card } from './components/card'
 import { Navbar } from './components/navbar'
 export default class Index extends React.Component {

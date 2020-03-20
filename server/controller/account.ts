@@ -5,10 +5,10 @@ import { account, swaper } from '../grpclient'
 import * as swaperPb from '../protos/swaper_pb'
 import * as accountPb from '../protos/account_pb'
 import { CallRPC, RPCError } from '../utils/callrpc'
-import { AuthorizationCookieName } from '../../const/cookie'
+import { AuthorizationCookieName } from '../../config/cookie'
 
 
-// routing-controllers 文档 
+// routing-controllers 文档
 // https://github.com/typestack/routing-controllers#make-parameter-required
 
 @rtc.JsonController('/api')

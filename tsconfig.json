@@ -33,8 +33,9 @@
     "next.config.js"
   ],
   "include": [
+    "types",
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
+    "pages/**/*.ts",
+    "pages/**/*.tsx"
   ]
 }

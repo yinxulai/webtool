@@ -1,5 +1,10 @@
 {
-  "watch": ["server", "static", "pages"],
+  "watch": [
+    "server",
+    "config",
+    "utils",
+    "types"
+  ],
   "exec": "ts-node --project tsconfig.server.json server/index.ts",
   "ext": "js ts less"
 }
