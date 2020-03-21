@@ -1,15 +1,14 @@
 import React from 'react'
+import { appInfo } from './config'
 import { Container } from 'react-pitaya';
-import { AppProps } from "../../../config/apps";
-import { Layout } from '../../components/layout';
+import { Layout } from '../../components/layout'
 
-export default function (props: AppProps) {
-  console.log(props)
+export default function render(_: AppProps) {
   return (
-    <Layout>
+    <Layout info={appInfo}>
       <Container>
         加密
-    </Container>
+      </Container>
     </Layout>
   )
 }

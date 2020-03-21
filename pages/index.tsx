@@ -3,6 +3,7 @@ import styles from './style.less'
 import { apps } from '../config/apps'
 import { Card } from './components/card'
 import { Navbar } from './components/navbar'
+
 export default class Index extends React.Component {
   render() {
     return (

@@ -42,12 +42,10 @@ function autoToaster(target: any, __: string, descriptor: PropertyDescriptor) {
 export interface IStoreState {
   light?: boolean
   userInfo?: IUserInfo
-  lastUpdate?: number
 }
 
 export class Store {
   @observable light = false
-  @observable lastUpdate = 0
   @observable.ref userInfo: IUserInfo = {}
 
   // 混合 state
@@ -55,8 +53,7 @@ export class Store {
   @action.bound
   hydrate(serializedStore: IStoreState) {
     if (serializedStore) {
-      const { light, lastUpdate } = serializedStore
-      this.lastUpdate = lastUpdate || Date.now()
+      const { light } = serializedStore
       this.light = !!light
     }
   }
@@ -103,8 +100,7 @@ export class Store {
   async fetchInitial(): Promise<IStoreState> {
     // 获取初始数据并返回
     return {
-      light: false,
-      lastUpdate: Date.now(),
+      light: false
     }
   }
 }
@@ -112,4 +108,3 @@ export class Store {
 const store = new Store()
 export default store
 export const fetchInitial = store.fetchInitial
-

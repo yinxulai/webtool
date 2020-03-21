@@ -8,6 +8,9 @@
   border: 3px solid transparent;
   box-shadow: 0 17px 37px -12px rgba(161, 142, 142, 0.24);
 
+  transition: 0.2s;
+  transform: scale(1.0);
+
   .name {
     display: block;
     font-size: 14px;
@@ -20,6 +23,7 @@
     color: #777;
     display: block;
     font-size: 12px;
+    min-width: 120px;
   }
 
   .tags {
@@ -30,4 +34,8 @@
     display: block;
     text-align: right;
   }
+}
+
+.card:hover {
+  transform: scale(1.1);
 }

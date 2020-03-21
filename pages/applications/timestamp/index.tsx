@@ -1,7 +1,7 @@
 import React from 'react'
+import { appInfo } from './config'
 import { Container } from 'react-pitaya'
 import { Code } from '../../components/code'
-import { AppProps } from "../../../config/apps"
 import { Layout } from '../../components/layout'
 
 // 当前时间
@@ -40,10 +40,9 @@ export function SampleCode() {
   )
 }
 
-export default function (props: AppProps) {
-  console.log(props)
+export default function render(_: AppProps) {
   return (
-    <Layout>
+    <Layout info={appInfo}>
       <Container>
         <CurrentTimestamp />
         <DateToTimestamp />

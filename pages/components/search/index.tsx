@@ -1,10 +1,13 @@
+import React from "react"
+import styles from "./style.less"
 import { Container } from "react-pitaya"
-import style from "./style.less"
 
-export const Sidebar = () => {
+export const Search = () => {
+  const [value, setValue] = React.useState<string>()
+
   return (
-    <Container className={[style.logo]}>
-      侧边栏
+    <Container className={[styles.search]}>
+      <input value={value} onChange={(e) => setValue(e.target.value)} />
     </Container>
   )
 }
