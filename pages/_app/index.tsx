@@ -45,7 +45,8 @@ export default class MobxApp extends App<IAppProps, IMobxAppState> {
           <Component {...pageProps} />
         </div>
         <footer className={styles.footer}>
-          © webtool(在线工具) 2020 - {new Date().getFullYear()} · 皖ICP备19004644号 · Designed by <strong>Alain</strong>
+          © WEBTOOL(在线工具) 2020 - {new Date().getFullYear()} · 皖ICP备19004644号 · DESIGNED BY
+          &ensp;<a href="https://github.com/yinxulai"><strong>ALAIN</strong></a>
         </footer>
       </div>
     )
