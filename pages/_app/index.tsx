@@ -3,32 +3,32 @@ import styles from './style.less'
 import { Overlay } from 'react-pitaya/lib/helper/overlay'
 import { Toaster } from 'react-pitaya/lib/helper/toaster'
 import App, { AppContext, AppInitialProps } from 'next/app'
-import store, { fetchInitial, IStoreState } from '../stores'
+import store, { fetchInitial, IStoreState } from '../../stores'
 
 interface IMobxAppState {
 }
 
-interface IMobxAppProps extends AppInitialProps {
+interface IAppProps extends AppInitialProps {
   storeInitialState: IStoreState
 }
 
-export default class MobxApp extends App<IMobxAppProps, IMobxAppState> {
+export default class MobxApp extends App<IAppProps, IMobxAppState> {
 
-  constructor(props: IMobxAppProps) {
+  constructor(props: IAppProps) {
     super(props as any)
     this.state = {}
   }
 
   // Fetching serialized(JSON) store state
   // 数据会通过 JSON 传到浏览器
-  static async getInitialProps(appContext: AppContext): Promise<IMobxAppProps> {
+  static async getInitialProps(appContext: AppContext): Promise<IAppProps> {
     const storeInitialState = await fetchInitial()
     const initialProps = App.getInitialProps(appContext)
     return { pageProps: initialProps, storeInitialState }
   }
 
   // 客户端
-  static getDerivedStateFromProps(props: IMobxAppProps): IMobxAppState {
+  static getDerivedStateFromProps(props: IAppProps): IMobxAppState {
     store.hydrate(props.storeInitialState)
     return {}
   }
@@ -38,9 +38,15 @@ export default class MobxApp extends App<IMobxAppProps, IMobxAppState> {
 
     return (
       <div id={styles.root}>
-        <Overlay />
-        <Toaster />
-        <Component {...pageProps} />
+        <div className={styles.overlays}>
+          <Overlay /> <Toaster />
+        </div>
+        <div className={styles.main}>
+          <Component {...pageProps} />
+        </div>
+        <footer className={styles.footer}>
+          © webtool(在线工具) 2020 - {new Date().getFullYear()} · 皖ICP备19004644号 · Designed by <strong>Alain</strong>
+        </footer>
       </div>
     )
   }

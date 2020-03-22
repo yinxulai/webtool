@@ -2,8 +2,7 @@ import Link from "next/link"
 import styles from "./style.less"
 import { Container } from "react-pitaya"
 import { IProps as IContainerProps } from 'react-pitaya/lib/components/container'
-
-
+import { Tag } from "../tag"
 
 interface Props extends IContainerProps {
   name: string, //名称
@@ -26,7 +25,7 @@ export const Card = (props: Props) => {
       </div>
 
       <div className={styles.tags}>
-        {keywords.map(key => <div key={key}>{key}</div>)}
+        {keywords.slice(0,2).map(key => <Tag key={key}>{key}</Tag>)}
       </div>
 
       <Link href={routePath}>
