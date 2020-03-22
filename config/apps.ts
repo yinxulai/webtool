@@ -6,6 +6,7 @@ import { appInfo as Regexpview } from '../pages/applications/regexpview/config'
 import { appInfo as Jsonformat } from '../pages/applications/jsonformat/config'
 import { appInfo as Croppicture } from '../pages/applications/croppicture/config'
 import { appInfo as Colorvalue } from '../pages/applications/colorvalue/config'
+
 export const apps: AppInfo[] = [
   Asciicode,
   Morsecode,
