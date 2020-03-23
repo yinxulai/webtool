@@ -24,6 +24,10 @@ nextServer.prepare().then(() => {
     await nextServer.render(req, res, '/', req.query)
   })
 
+  pages.get('/applications', async (_, res) => {
+    res.redirect('/')
+  })
+
   pages.get('/applications/:name', async (req, res) => {
     const appName = req.param('name')
     if (!appName) { res.redirect('/') }

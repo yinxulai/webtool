@@ -1,8 +1,12 @@
-import { AppContext } from "../../_app/ctx"
-import { Container } from "react-pitaya"
-import { Search } from "../search"
-import style from "./style.less"
 import React from "react"
+import style from "./style.less"
+import { Search } from "../search"
+import { Container } from "react-pitaya"
+import { AppContext } from "../../_app/ctx"
+
+
+
+
 
 
 export const Navbar = () => {
