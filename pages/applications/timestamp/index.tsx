@@ -41,6 +41,7 @@ export function SampleCode() {
 }
 
 export default function render(_: AppProps) {
+
   return (
     <Layout info={appInfo}>
       <Container>
