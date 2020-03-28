@@ -6427,10 +6427,10 @@ react-is@^16.7.0, react-is@^16.8.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
-react-pitaya@^0.0.14:
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/react-pitaya/-/react-pitaya-0.0.14.tgz#383f002d3f87c831e15e485e2678d784b162ca3b"
-  integrity sha512-J0coqQUZVJao7LY2AINqiHdgQpdUAdz3Y08IqPpa0nRLjmf/78wkiereGXatwJpcAHx61t2tGpgFWwjZRqdLpg==
+react-pitaya@^0.0.16:
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/react-pitaya/-/react-pitaya-0.0.16.tgz#a0ee57bfef6eda1cbd2b1e85969472ef8edf64f4"
+  integrity sha512-6MysZj7++eZsbpg9KPlFWMt6WWdRZp2Gmo3pMn4XEsN4I3USpF/rThS8piet4flFzh1QvDRPz/WSc1M+q3358w==
   dependencies:
     "@babel/runtime" "^7.8.4"
     core-js "3"
