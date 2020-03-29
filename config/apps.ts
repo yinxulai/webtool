@@ -7,6 +7,7 @@ import { appInfo as Jsonformat } from '../pages/applications/jsonformat/config'
 import { appInfo as Croppicture } from '../pages/applications/croppicture/config'
 import { appInfo as Colorvalue } from '../pages/applications/colorvalue/config'
 import { appInfo as Selectsort } from '../pages/applications/selectsort/config'
+import { appInfo as Walkmaze } from '../pages/applications/walkmaze/config'
 
 export const apps: AppInfo[] = [
   Asciicode,
@@ -18,4 +19,5 @@ export const apps: AppInfo[] = [
   Croppicture,
   Colorvalue,
   Selectsort,
+  Walkmaze
 ]

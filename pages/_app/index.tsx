@@ -51,7 +51,8 @@ export default class MobxApp extends App<IAppProps, IMobxAppState> {
       <div id={styles.root}>
         <AppContext.Provider value={defaultAppContext}>
           <div className={styles.overlays}>
-            <Overlay /> <Toaster />
+            <Overlay />
+            <Toaster />
           </div>
           <div className={styles.content}>
             <div className={styles.navbar}>

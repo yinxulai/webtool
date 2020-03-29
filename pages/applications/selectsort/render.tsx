@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './style.less'
 import { cloneDeep, merge } from 'lodash'
+import { warning } from 'react-pitaya/lib/helper/toaster'
 import { Container, StepPlayer, Input, Button } from 'react-pitaya'
 
 interface StepState {
@@ -141,7 +142,18 @@ const dafalueSteps = generateSelectSortSteps(10)
 export default function render(_props: AppProps) {
   const [steps, setSteps] = React.useState(dafalueSteps)
   const [length, setLength] = React.useState(defaultLength)
-  const reGenerateSteps = () => setSteps(generateSelectSortSteps(length))
+
+  const reGenerateSteps = () => {
+    if (!Number.isFinite(length)) {
+      return warning('无效的数值')
+    }
+
+    if (length > 100) {
+      return warning('指定长度过大')
+    }
+
+    setSteps(generateSelectSortSteps(length))
+  }
 
   return (
     <Container
@@ -149,7 +161,7 @@ export default function render(_props: AppProps) {
     >
       <StepPlayer
         playSpeed={50}
-        autoloop={false}
+        autoloop={true}
         steps={steps || []}
         stepRender={renderSortChart}
       />
