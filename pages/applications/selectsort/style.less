@@ -1,0 +1,50 @@
+@import "~react-pitaya/lib/styles/gap.less";
+@import "~react-pitaya/lib/styles/color.less";
+@import "~react-pitaya/lib/styles/altitude.less";
+
+.selectsort {
+  width: 600px;
+  padding: 20px;
+}
+
+.controlBar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  .gap-margin-top(2);
+
+  .lengthInput {
+    flex: 1;
+    .gap-margin-right(1);
+  }
+}
+
+.chartScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  .gap-padding-all(2);
+
+  .valueRect {
+    flex: 1;
+    margin: 1px;
+    color: white;
+    transition: .1s;
+    font-size: 12px;
+    padding: 2px 4px;
+    text-align: left;
+    border-radius: 0 8px 8px 0;
+    background-color: rgba(0, 0, 0, .2);
+  }
+
+  .valueRect.sorted {
+    background-color: @correct;
+  }
+
+  .valueRect.active {
+    margin-left: 8px;
+    background-color: @normal;
+  }
+}
