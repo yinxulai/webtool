@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './style.less'
 import { cloneDeep, merge } from 'lodash'
 import { warning } from 'react-pitaya/lib/helper/toaster'
-import { Container, StepPlayer, Input, Button } from 'react-pitaya'
+import { Container, StepPlayer, MarkDown, Input, Button } from 'react-pitaya'
 
 interface StepState {
   id: number
@@ -175,6 +175,9 @@ export default function render(_props: AppProps) {
         />
         <Button onClick={reGenerateSteps}>生成排序过程</Button>
       </div>
+      <MarkDown>
+        > 其实不会太明显
+      </MarkDown>
     </Container>
   )
 }

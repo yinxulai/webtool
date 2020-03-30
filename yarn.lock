@@ -3894,6 +3894,11 @@ hawk@~3.1.3:
     hoek "2.x.x"
     sntp "1.x.x"
 
+highlight.js@^9.18.1:
+  version "9.18.1"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.18.1.tgz#ed21aa001fe6252bb10a3d76d47573c6539fe13c"
+  integrity sha512-OrVKYz70LHsnCgmbXctv/bfuvntIKDz177h0Co37DQ5jamGZLVmoCVMtjMtNZY3X9DrCcKfklHPNeA0uPZhSJg==
+
 highlight.js@~9.15.0, highlight.js@~9.15.1:
   version "9.15.10"
   resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.15.10.tgz#7b18ed75c90348c045eef9ed08ca1319a2219ad2"
@@ -4786,6 +4791,11 @@ map-visit@^1.0.0:
   integrity sha1-7Nyo8TFE5mDxtb1B8S80edmN+48=
   dependencies:
     object-visit "^1.0.0"
+
+marked@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-0.8.2.tgz#4faad28d26ede351a7a1aaa5fec67915c869e355"
+  integrity sha512-EGwzEeCcLniFX51DhTpmTom+dSA/MG/OBUDjnWtHbEnjAH180VzUeAw+oE4+Zv+CoYBWyRlYOTR0N8SO9R1PVw==
 
 md5.js@^1.3.4:
   version "1.3.5"
@@ -6540,13 +6550,15 @@ react-is@^16.7.0, react-is@^16.8.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
-react-pitaya@0.0.18:
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/react-pitaya/-/react-pitaya-0.0.18.tgz#b37e28c064ecedbb6526ea5b189c50165ba04729"
-  integrity sha512-etkb4eJbR1glvKTZZrasg9GFQ3G978jF+kxyoER0bo0+V61Ox+57MSqGneWOANIL3K16llHHu2sGbt1EO8xHGQ==
+react-pitaya@^0.0.22:
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/react-pitaya/-/react-pitaya-0.0.22.tgz#d2a452d854d36e10a0f01a3818ffb6b1fdf9c9c6"
+  integrity sha512-E4Daa9fBt9uGUpjaku+Ghd8YdicfHf05yALww/YUsit9WQp2Z8HfMPVCYX4zkbvLs9jFuef6w5MTDk1r7OlFgw==
   dependencies:
     "@babel/runtime" "^7.8.4"
     core-js "3"
+    highlight.js "^9.18.1"
+    marked "^0.8.2"
 
 react-syntax-highlighter@^12.2.1:
   version "12.2.1"
