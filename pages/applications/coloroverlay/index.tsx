@@ -16,7 +16,7 @@ export default function render(_: AppProps) {
         <MarkDown>
           可以输入你的算法来看看会发生什么
         </MarkDown>
-        <Textarea width={500} />
+        <Textarea width={700} />
       </Container>
     </Layout>
   )

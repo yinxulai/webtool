@@ -14,12 +14,9 @@ interface Position {
 
 type Rect = Position & Size
 
-// function isEqualRect(a: Rect, b: Rect): boolean {
-//   return a.x === b.x
-//     && a.y === b.y
-//     && a.width === b.width
-//     && a.height === b.height
-// }
+interface JionRect extends Rect {
+  imageDatas: ImageData[]
+}
 
 abstract class Layer implements Rect {
   x: number // 位置 x 相对于画布
@@ -32,6 +29,9 @@ abstract class Layer implements Rect {
   scalefactor: number // 缩放系数
   mouseOffsetX: number // 鼠标在对象上点击时会更新
   mouseOffsetY: number  // 鼠标在对象上点击时会更新
+
+  internalCanvas: HTMLCanvasElement
+  internalContext: CanvasRenderingContext2D
 
   draw(_size: Size, _context: CanvasRenderingContext2D) {
     console.warn('继承者需要自己实现 draw 方法, 注意')
@@ -73,24 +73,6 @@ abstract class Layer implements Rect {
     this.scalefactor = factor
   }
 
-  // 获取指定像素点的颜色
-  getImageData(rect: Rect): ImageData {
-    const size = this.getComputedSize()
-
-    // TODO: 注意服务端
-    const cans = new HTMLCanvasElement()
-    const ctx = cans.getContext('2d')
-    cans.height = size.height
-    cans.width = size.width
-    this.draw(size, ctx)
-    return ctx.getImageData(
-      rect.x,
-      rect.y,
-      rect.width,
-      rect.height
-    )
-  }
-
   // 获取计算后的尺寸信息
   getComputedSize(): Size {
     const { scalefactor = 1 } = this
@@ -101,27 +83,48 @@ abstract class Layer implements Rect {
   }
 }
 
+// 叠加层
 class Overlay extends Layer {
-  constructor(rect: Rect) {
+  imageDatas: ImageData[]
+
+  constructor(rect: JionRect) {
     super()
     this.x = rect.x
     this.y = rect.y
-    this.height = rect.height
     this.width = rect.width
+    this.height = rect.height
+    this.imageDatas = rect.imageDatas
   }
 
   draw(size: Size, context: CanvasRenderingContext2D) {
-    // 取颜色计算
-    context.fillStyle = '#e6c7ff'
+    // const drawImageData = new ImageData(this.width, this.height)
+    // drawImageData.data =  this.imageDatas[0].data
+
+    //  drawImageData.data.map((_, i) => {
+    //   // const _valueSet = this.imageDatas.map(image => {
+    //   //   return image.data[i]
+    //   // })
+    //   return i % 255
+    // })
+
+    context.fillStyle = 'rgba(0, 0, 0, 0.1)'
+    context.strokeStyle = 'rgba(0, 0, 0, 1.0)'
     context.fillRect(this.x, this.y, size.width, size.height)
-    context.stroke()
+    context.strokeRect(this.x, this.y, size.width, size.height)
+
+    // createImageBitmap(this.imageDatas[0]).then(
+    //   image => {
+
+    //   },
+    //   err => { error('数据错误, 绘制失败'); console.error(err) }
+    // )
   }
 }
 
 class ImageLayer extends Layer {
-  image: HTMLImageElement
+  image: ImageBitmap
 
-  constructor(image: HTMLImageElement) {
+  constructor(image: ImageBitmap) {
     super()
     this.image = image
     this.scalefactor = 1
@@ -130,20 +133,19 @@ class ImageLayer extends Layer {
   }
 
   draw(size: Size, context: CanvasRenderingContext2D) {
-    const { x = 0, y = 0, image = new Image() } = this
+    const { x = 0, y = 0, image = new ImageBitmap() } = this
     context.drawImage(image, x, y, size.width, size.height)
   }
 }
 
 class Canvas {
-  width: number
-  height: number
-  layers: Layer[]
-  domRect: DOMRect
-  activeLayer: Layer
-  overlays: Overlay[]
-  dom: HTMLCanvasElement
-  context: CanvasRenderingContext2D
+  width: number // 画布宽高
+  height: number // 画布宽高
+  layers: Layer[] // 画布层
+  domRect: DOMRect // dom rect
+  activeLayer: Layer // 当前的活跃层
+  dom: HTMLCanvasElement // dom
+  context: CanvasRenderingContext2D // canvas 上下文
 
   constructor() {
     this.width = 0
@@ -331,10 +333,10 @@ class Canvas {
     const files = event.dataTransfer.files
     const { x: ex = 0, y: ey = 0 } = event
     const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'))
-    const imageHTMLs = Promise.all(imageFiles.map(imageFile => this.fileToImage(imageFile)))
+    const imageBitmaps = Promise.all(imageFiles.map(imageFile => createImageBitmap(imageFile)))
     success(`收到 ${imageFiles.length} 张图片`)
 
-    imageHTMLs
+    imageBitmaps
       .then(images => {
         images.forEach(image => {
           const layer = new ImageLayer(image)
@@ -370,8 +372,8 @@ class Canvas {
   }
 
   // 获取 layer 的全部交集
-  getLayerJionRects() {
-    const rectSet: Rect[] = []
+  getLayerJionRects(): JionRect[] {
+    const rectSet: JionRect[] = []
     // 求交集面积
     this.layers.forEach(layer => {
       this.layers.forEach((tLayer => {
@@ -380,8 +382,9 @@ class Canvas {
           return // 找到自己了
         }
 
-        const rect: Rect = {
+        const rect: JionRect = {
           x: 0, y: 0,
+          imageDatas: [],
           height: 0, width: 0
         }
 
@@ -408,22 +411,11 @@ class Canvas {
       }
     }
 
-    return rectSet
-  }
-
-  // 文件转图片
-  fileToImage(file: File): Promise<HTMLImageElement> {
-    return new Promise((resolve, rejects) => {
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.addEventListener('error', rejects)
-      reader.addEventListener('load', event => {
-        const image = new Image()
-        image.src = event.target.result as any
-        image.addEventListener('error', rejects)
-        image.addEventListener('load', () => resolve(image))
-      })
-    })
+    // 取色块
+    return rectSet.map(rect => ({
+      ...rect,
+      imageDatas: []
+    }))
   }
 
   // 清空画布
@@ -469,7 +461,7 @@ export function Playground() {
   }, [canvasRef])
 
   return (
-    <canvas ref={canvasRef} width="500" height="400">
+    <canvas ref={canvasRef} width="700" height="400">
       <p>您的系统不支持此程序!</p>
     </canvas>
   )
