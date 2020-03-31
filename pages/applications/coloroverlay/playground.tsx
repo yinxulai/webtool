@@ -1,3 +1,4 @@
+import styles from './style.less'
 import React, { useEffect } from 'react'
 import autobind from 'react-pitaya/lib/helper/autobind'
 import { success, error } from 'react-pitaya/lib/helper/toaster'
@@ -18,6 +19,10 @@ interface JionRect extends Rect {
   imageDatas: ImageData[]
 }
 
+interface DrawOptions extends Size {
+  isActive?: boolean
+}
+
 abstract class Layer implements Rect {
   x: number // 位置 x 相对于画布
   y: number // 位置 y 相对于画布
@@ -30,15 +35,13 @@ abstract class Layer implements Rect {
   mouseOffsetX: number // 鼠标在对象上点击时会更新
   mouseOffsetY: number  // 鼠标在对象上点击时会更新
 
-  internalCanvas: HTMLCanvasElement
-  internalContext: CanvasRenderingContext2D
-
-  draw(_size: Size, _context: CanvasRenderingContext2D) {
+  draw(_context: CanvasRenderingContext2D, _options: DrawOptions) {
     console.warn('继承者需要自己实现 draw 方法, 注意')
   }
 
   isArea(position: Position): boolean {
-    const { x, y } = position
+    let { x, y } = position
+    // const { mouseOffsetX, mouseOffsetY } = this
     const { width, height } = this.getComputedSize()
 
     if (
@@ -47,8 +50,10 @@ abstract class Layer implements Rect {
       && x <= (this.x + width)
       && y <= (this.y + height)
     ) {
+      // console.log('true', position, this.x + width, this.y + height)
       return true
     } else {
+      // console.log('false', position, this.x + width, this.y + height)
       return false
     }
   }
@@ -96,7 +101,8 @@ class Overlay extends Layer {
     this.imageDatas = rect.imageDatas
   }
 
-  draw(size: Size, context: CanvasRenderingContext2D) {
+  draw(context: CanvasRenderingContext2D, options: DrawOptions) {
+    const { width, height } = options
     // const drawImageData = new ImageData(this.width, this.height)
     // drawImageData.data =  this.imageDatas[0].data
 
@@ -107,10 +113,10 @@ class Overlay extends Layer {
     //   return i % 255
     // })
 
-    context.fillStyle = 'rgba(0, 0, 0, 0.1)'
     context.strokeStyle = 'rgba(0, 0, 0, 1.0)'
-    context.fillRect(this.x, this.y, size.width, size.height)
-    context.strokeRect(this.x, this.y, size.width, size.height)
+    context.strokeRect(this.x, this.y, width, height)
+    context.fillStyle = 'rgba(0, 0, 0, 0.1)'
+    context.fillRect(this.x, this.y, width, height)
 
     // createImageBitmap(this.imageDatas[0]).then(
     //   image => {
@@ -132,13 +138,21 @@ class ImageLayer extends Layer {
     this.width = image.height
   }
 
-  draw(size: Size, context: CanvasRenderingContext2D) {
+  draw(context: CanvasRenderingContext2D, options: DrawOptions) {
+    const { width, height, isActive } = options
     const { x = 0, y = 0, image = new ImageBitmap() } = this
-    context.drawImage(image, x, y, size.width, size.height)
+
+    if (isActive) {
+      context.strokeStyle = 'rgba(0, 0, 0, 1.0)'
+      context.strokeRect(this.x, this.y, width, height)
+    }
+
+    context.drawImage(image, x, y, width, height)
   }
 }
 
 class Canvas {
+
   width: number // 画布宽高
   height: number // 画布宽高
   layers: Layer[] // 画布层
@@ -181,7 +195,6 @@ class Canvas {
   bindEvent(dom: HTMLCanvasElement) {
     dom.addEventListener('drop', this.handleDrop)
     dom.addEventListener('wheel', this.handleWheel)
-    dom.addEventListener('click', this.handleClick)
     dom.addEventListener('resize', this.handleReSize)
     dom.addEventListener('keydown', this.handleKeyDown)
     dom.addEventListener('dragover', this.handleDragOver)
@@ -209,17 +222,19 @@ class Canvas {
     )
   }
 
+  // 鼠标滚动缩放事件
   @autobind
   handleWheel(event: WheelEvent) {
     event.preventDefault()
-    const { x: cx, y: cy } = this.domRect
-    const { x: ex, y: ey, deltaY } = event
-    const layers = this.getSortedLayers(true)
+
+    // const { x: cx, y: cy } = this.domRect
+    const { offsetX, offsetY, deltaY } = event
 
     // 鼠标的相对位置
-    const mouseX = ex - cx
-    const mouseY = ey - cy
+    const mouseX = offsetX
+    const mouseY = offsetY
 
+    const layers = this.getSortedLayers(true)
     const layer = this.getLayerByPosition(layers, { x: mouseX, y: mouseY })
 
     if (!layer) {
@@ -227,15 +242,15 @@ class Canvas {
     }
 
     if (deltaY > 0) {
-      layer.setScalefactor(layer.scalefactor + 0.03 || 1)
+      layer.setScalefactor(layer.scalefactor - 0.04 || 0.1)
     } else if (deltaY < 0) {
-      layer.setScalefactor(layer.scalefactor - 0.03 || 0.1)
+      layer.setScalefactor(layer.scalefactor + 0.04 || 1)
     }
 
     this.draw()
   }
 
-
+  // handleDragOver
   @autobind
   handleDragOver(event: DragEvent) {
     event.preventDefault()
@@ -249,25 +264,21 @@ class Canvas {
       return
     }
 
-    const { x: ex, y: ey } = event
-    const { x: cx, y: cy } = this.domRect
+    const { offsetX, offsetY } = event
+
     const layers = this.getSortedLayers(true)
-
-    // 鼠标的相对位置
-    const mouseX = ex - cx
-    const mouseY = ey - cy
-
-    const layer = this.getLayerByPosition(layers, { x: mouseX, y: mouseY })
+    const layer = this.getLayerByPosition(layers, { x: offsetX, y: offsetY })
 
     if (!layer) {
       return
     }
 
-    if (layer === this.activeLayer && layer.isArea({ x: mouseX, y: mouseY })) {
+    if (layer === this.activeLayer) {
 
       // 新的位置 =  + offset
-      const newX = mouseX - layer.mouseOffsetX
-      const newY = mouseY - layer.mouseOffsetY
+      const newX = offsetX - layer.mouseOffsetX
+      const newY = offsetY - layer.mouseOffsetY
+
       // 设置新的位置
       layer.setPosition({ x: newX, y: newY })
       this.draw() // 刷新显示
@@ -276,20 +287,18 @@ class Canvas {
 
   @autobind
   handleMouseDown(event: MouseEvent) {
-    const { x: ex, y: ey } = event
-    const { x: cx, y: cy } = this.domRect
+    const { offsetX, offsetY } = event
+
     const layers = this.getSortedLayers(true)
     const maxZIndex = this.getExtremeZIndex(true)
-
-    // 鼠标的相对位置
-    const mouseX = ex - cx
-    const mouseY = ey - cy
-
-    const layer = this.getLayerByPosition(layers, { x: mouseX, y: mouseY })
+    const layer = this.getLayerByPosition(layers, { x: offsetX, y: offsetY })
 
     if (!layer) {
       return
     }
+
+    // 设置当前 layer 为 activeLayer
+    this.activeLayer = layer
 
     if (layer.zIndex < maxZIndex) {
       // 如果层级太低 加大一点
@@ -297,14 +306,7 @@ class Canvas {
       this.draw()
     }
 
-    // 设置当前 layer 为 activeLayer
-    this.activeLayer = layer
-
-    // 鼠标距离图片的距离
-    const offsetX = mouseX - layer.x
-    const offsetY = mouseY - layer.y
-
-    layer.setMouseOffset({ x: offsetX, y: offsetY })
+    layer.setMouseOffset({ x: offsetX - layer.x, y: offsetY - layer.y })
     this.draw()
   }
 
@@ -313,25 +315,14 @@ class Canvas {
     console.log(event)
   }
 
-  // 处理点击事件
-  @autobind
-  handleClick(event: MouseEvent) {
-    const { clientX, clientY } = event
-    const layers = this.getSortedLayers(true)
-    const maxZIndex = this.getExtremeZIndex(true)
-    const layer = this.getLayerByPosition(layers, { x: clientX, y: clientY })
-
-    if (layer) {
-      layer.setZIndex(maxZIndex + 1)
-    }
-  }
-
+  // 拖入文件的处理
   @autobind
   handleDrop(event: DragEvent) {
     event.preventDefault()
+    const { offsetX, offsetY } = event
     const { x: dx, y: dy } = this.domRect
     const files = event.dataTransfer.files
-    const { x: ex = 0, y: ey = 0 } = event
+
     const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'))
     const imageBitmaps = Promise.all(imageFiles.map(imageFile => createImageBitmap(imageFile)))
     success(`收到 ${imageFiles.length} 张图片`)
@@ -340,7 +331,7 @@ class Canvas {
       .then(images => {
         images.forEach(image => {
           const layer = new ImageLayer(image)
-          layer.setPosition({ x: ex - dx, y: ey - dy })
+          layer.setPosition({ x: offsetX - dx, y: offsetY - dy })
           this.pushLayer(layer)
         })
       })
@@ -434,8 +425,12 @@ class Canvas {
     const layers = this.getSortedLayers(false)
     for (let index = 0; index < layers.length; index++) {
       const layer = layers[index]
+      const isActive = this.activeLayer === layer
       const size = layer.getComputedSize()
-      layer.draw(size, this.context)
+      layer.draw(this.context, {
+        ...size,
+        isActive
+      })
     }
 
     // 绘制 overlays
@@ -445,7 +440,7 @@ class Canvas {
     for (let index = 0; index < sortedOverlays.length; index++) {
       const overlay = sortedOverlays[index]
       const size = overlay.getComputedSize()
-      overlay.draw(size, this.context)
+      overlay.draw(this.context, { ...size })
     }
   }
 }
@@ -461,7 +456,7 @@ export function Playground() {
   }, [canvasRef])
 
   return (
-    <canvas ref={canvasRef} width="700" height="400">
+    <canvas className={styles.canvas} ref={canvasRef} width="700" height="400">
       <p>您的系统不支持此程序!</p>
     </canvas>
   )
