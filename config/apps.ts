@@ -10,6 +10,8 @@ import { appInfo as Morsecode } from '../pages/applications/morsecode/config'
 import { appInfo as Timestamp } from '../pages/applications/timestamp/config'
 import { appInfo as Walkmaze } from '../pages/applications/walkmaze/config'
 
+//TODO: 分钱算法ß
+
 export const apps: AppInfo[] = [
   Coloroverlay,
   Croppicture,
