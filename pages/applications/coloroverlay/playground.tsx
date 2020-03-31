@@ -144,6 +144,8 @@ class Canvas {
   @autobind
   handleMouseMove(event: MouseEvent) {
     const { clientX, clientY } = event
+    if (event.buttons !== 1) { return }
+    console.log(clientX, clientY)
     const layers = this.getSortedLayers(true)
     const maxZIndex = this.getExtremeZIndex(true)
     for (let index = 0; index < layers.length; index++) {
