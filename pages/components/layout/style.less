@@ -10,6 +10,7 @@
   .content {
     display: flex;
     flex-direction: column;
+    .gap-margin-bottom(8);
     align-items: center;
 
     .card {
@@ -18,11 +19,16 @@
       border-radius: 10px;
       display: inline-block;
       background-color: white;
-      .gap-margin-bottom(8);
+      .altitude-box-shadow(7);
       .gap-padding-all(4);
-      .altitude(7);
 
-      overflow: hidden;
+      width: 700px;
+      box-sizing: border-box;
+
+      .cardWrap {
+        position: relative;
+        box-sizing: border-box;
+      }
     }
   }
 
@@ -46,13 +52,14 @@
 
   .title {
     color: white;
-    font-size: 18px;
-    line-height: 40px;
+    font-size: 20px;
+    line-height: 50px;
     font-weight: bold;
   }
 
   .subtitle {
-    font-size: 12px;
+    font-size: 14px;
+    line-height: 30px;
     font-weight: bold;
     color: rgba(255, 255, 255, .8);
   }

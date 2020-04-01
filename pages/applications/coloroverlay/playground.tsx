@@ -312,7 +312,12 @@ class Canvas {
 
   @autobind
   handleKeyDown(event: KeyboardEvent) {
-    console.log(event)
+    switch (event.key) {
+      case 'Delete':
+        this.layers = this.layers.filter(layer => layer !== this.activeLayer)
+    }
+
+    this.draw()
   }
 
   // 拖入文件的处理
@@ -320,7 +325,6 @@ class Canvas {
   handleDrop(event: DragEvent) {
     event.preventDefault()
     const { offsetX, offsetY } = event
-    const { x: dx, y: dy } = this.domRect
     const files = event.dataTransfer.files
 
     const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'))
@@ -331,7 +335,7 @@ class Canvas {
       .then(images => {
         images.forEach(image => {
           const layer = new ImageLayer(image)
-          layer.setPosition({ x: offsetX - dx, y: offsetY - dy })
+          layer.setPosition({ x: offsetX, y: offsetY })
           this.pushLayer(layer)
         })
       })
@@ -456,7 +460,13 @@ export function Playground() {
   }, [canvasRef])
 
   return (
-    <canvas className={styles.canvas} ref={canvasRef} width="700" height="400">
+    <canvas
+      height="400"
+      width="676"
+      tabIndex={1}
+      ref={canvasRef}
+      className={styles.canvas}
+    >
       <p>您的系统不支持此程序!</p>
     </canvas>
   )

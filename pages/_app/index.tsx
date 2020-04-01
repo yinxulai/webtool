@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './style.less'
-import { Navbar } from '../components/navbar'
+// import { Navbar } from '../components/navbar'
 import { AppContext, defaultAppContext } from './ctx'
 import { Overlay } from 'react-pitaya/lib/helper/overlay'
 import { Toaster } from 'react-pitaya/lib/helper/toaster'
@@ -56,7 +56,7 @@ export default class MobxApp extends App<IAppProps, IMobxAppState> {
           </div>
           <div className={styles.content}>
             <div className={styles.navbar}>
-              <Navbar />
+              {/* <Navbar /> */}
             </div>
             <div className={styles.body}>
               <Component {...pageProps} />

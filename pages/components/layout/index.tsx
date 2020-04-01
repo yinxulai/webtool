@@ -54,7 +54,9 @@ export const Layout: React.FC<React.PropsWithChildren<Props>> = (props) => {
       <div className={styles.content}>
         <AppHeader {...props.info} />
         <div className={styles.card}>
-          {props.children}
+          <div className={styles.cardWrap}>
+            {props.children}
+          </div>
         </div>
       </div>
       {/* 推荐 */}

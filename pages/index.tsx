@@ -40,7 +40,7 @@ function matchApps(keyWords: string[]): AppInfo[] {
   return Array.from(new Set([...keyWordMatched, ...unitWordMatched, ...apps]))
 }
 
-const Banner: React.FC = () => {
+export const Banner: React.FC = () => {
   return (
     <div className={styles.banner}>
       <div className={styles.title}>在线工具集合</div>
@@ -55,7 +55,7 @@ export const Index: React.FC = () => {
 
   return (
     <div className={styles.index}>
-      <Banner />
+      {/* <Banner /> */}
       {/* <Search onChange={setSearchValue} /> */}
       <div className={styles.applications}>
         {matchedApps.map(
