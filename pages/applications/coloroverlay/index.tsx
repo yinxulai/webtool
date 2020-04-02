@@ -1,8 +1,8 @@
 import React from 'react'
 import { appInfo } from './config'
-import { Container, MarkDown } from 'react-pitaya'
-import { Playground } from './playground'
+import { Playground } from './canvas'
 import { Layout } from '../../components/layout'
+import { Container, MarkDown } from 'react-pitaya'
 import { Textarea } from 'react-pitaya/lib/components/input'
 
 export default function render(_: AppProps) {
