@@ -6,36 +6,34 @@
 
 .layout {
   width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  .gap-margin-bottom(8);
 
   .content {
     display: flex;
-    flex-direction: column;
-    .gap-margin-bottom(8);
     align-items: center;
+    flex-direction: column;
+    justify-content: center;
 
     .card {
-      margin: 0 auto;
-      min-height: 300px;
+      width: 700px;
+      position: relative;
       border-radius: 10px;
       display: inline-block;
+      box-sizing: border-box;
       background-color: white;
       .altitude-box-shadow(7);
-      .gap-padding-all(4);
-
-      width: 700px;
-      box-sizing: border-box;
-
-      .cardWrap {
-        position: relative;
-        box-sizing: border-box;
-      }
+      .gap-padding-all(8);
     }
   }
+}
 
-  .comment {
-    min-width: @min-width;
-    max-width: @max-width;
-  }
+.comment {
+  min-width: @min-width;
+  max-width: @max-width;
 }
 
 .appHeader {
@@ -49,6 +47,8 @@
   align-items: center;
   flex-direction: column;
   justify-content: center;
+
+  box-sizing: border-box;
 
   .title {
     color: white;
@@ -73,24 +73,21 @@
     .gap-margin-top(2);
 
     span {
+      margin: 0 4px;
+      font-size: 12px;
       padding: 2px 6px;
       border-radius: 10px;
-      font-size: 12px;
-      margin: 0 4px;
       background-color: rgba(255, 255, 255, .8);
     }
   }
 }
 
 .recommendedBooth {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-
-  width: 100%;
   padding: 20px;
-  // background-color: #e7e7e7;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
 
   .appCard {
     min-width: 200px;

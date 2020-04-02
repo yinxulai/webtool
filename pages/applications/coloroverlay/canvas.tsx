@@ -20,7 +20,7 @@ interface JionRect extends Rect {
   imageDatas: ImageData[]
 }
 
-interface DrawOptions extends Size {
+interface DrawOptions extends Partial<Position & Size> {
   isActive?: boolean
 }
 
@@ -47,22 +47,32 @@ abstract class Layer implements Rect {
     console.warn('继承者需要自己实现 draw 方法, 注意')
   }
 
-  isArea(position: Position): boolean {
+  isArea(position: Position, offset = false): boolean {
     let { x, y } = position
-    // const { mouseOffsetX, mouseOffsetY } = this
     const { width, height } = this.getComputedSize()
 
-    if (
-      x >= this.x
-      && y >= this.y
-      && x <= (this.x + width)
-      && y <= (this.y + height)
-    ) {
-      // console.log('true', position, this.x + width, this.y + height)
-      return true
+    if (offset) {
+      if (
+        x >= 0
+        && y >= 0
+        && x <= width
+        && y <= height
+      ) {
+        return true
+      } else {
+        return false
+      }
     } else {
-      // console.log('false', position, this.x + width, this.y + height)
-      return false
+      if (
+        x >= this.x
+        && y >= this.y
+        && x <= (this.x + width)
+        && y <= (this.y + height)
+      ) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 
@@ -74,8 +84,6 @@ abstract class Layer implements Rect {
     const { x, y } = position
     this.x = x
     this.y = y
-
-    console.log(position, this.x, this.x)
   }
 
   setMouseOffset(position: Position) {
@@ -104,12 +112,12 @@ abstract class Layer implements Rect {
     const data = new Uint8ClampedArray(width * height * 4)
 
     // 区域的起点
-    if (this.isArea({ x, y })) {
+    if (!this.isArea({ x, y })) {
       return null
     }
 
     // 区域的终点
-    if (this.isArea({ x: x + width, y: y + height })) {
+    if (!this.isArea({ x: x + width, y: y + height })) {
       return null
     }
 
@@ -137,8 +145,6 @@ class Overlay extends Layer {
       return
     }
 
-    console.log(this.imageDatas)
-
     // 结构是 [r,g,b,a...]
     const tempImage = new Uint8ClampedArray(width * height * 4)
       .map((_value, index) => {
@@ -147,6 +153,8 @@ class Overlay extends Layer {
           return 255   // 不透明
         }
 
+        return 255 - this.imageDatas[0].data[index]
+        
         const _valueSet = this.imageDatas.map(image => {
           return image.data[index]
         })
@@ -162,13 +170,17 @@ class Overlay extends Layer {
         context.strokeRect(this.x, this.y, width, height)
         context.drawImage(image, this.x, this.y, width, height)
       },
-      err => { error('数据错误, 绘制失败'); console.error(err) }
+      err => {
+        console.error(err)
+        error('数据错误, 绘制失败')
+      }
     )
   }
 }
 
 class ImageLayer extends Layer {
   image: ImageBitmap
+  internalCanvas: HTMLCanvasElement
   internalCanvasContext: CanvasRenderingContext2D
 
   constructor(image: ImageBitmap) {
@@ -191,8 +203,9 @@ class ImageLayer extends Layer {
   }
 
   draw(context: CanvasRenderingContext2D, options: DrawOptions) {
-    const { width, height, isActive } = options
-    const { x = 0, y = 0, image = new ImageBitmap() } = this
+    const { x: tx = 0, y: ty = 0, image } = this
+    const { x = tx, y = ty, width, height, isActive } = options
+
 
     if (isActive) {
       context.lineWidth = 1
@@ -203,18 +216,17 @@ class ImageLayer extends Layer {
     context.drawImage(image, x, y, width, height)
   }
 
-  // TODO: 核心难点了...
-  // 还没有处理完
   getImageData(rect: Rect): ImageData {
+    const size = this.getComputedSize()
     const { x, y, width, height } = rect
 
     // 区域的起点
-    if (this.isArea({ x, y })) {
+    if (!this.isArea({ x, y }, true)) {
       return null
     }
 
     // 区域的终点
-    if (this.isArea({ x: x + width, y: y + height })) {
+    if (!this.isArea({ x: x + width, y: y + height }, true)) {
       return null
     }
 
@@ -222,21 +234,22 @@ class ImageLayer extends Layer {
       this.createInternalCanvasContext()
     }
 
+    this.internalCanvas.width = size.width
+    this.internalCanvas.height = size.height
     this.draw(this.internalCanvasContext,
-      { ...this.getComputedSize() }
+      {
+        ...this.getComputedSize(),
+        x: 0, y: 0,
+      }
     )
-
-    console.log(rect)
 
     return this.internalCanvasContext
       .getImageData(x, y, width, height)
   }
 
   createInternalCanvasContext() {
-    const html = document.createElement('canvas')
-    html.width = this.width * this.width
-    html.height = this.height * this.height
-    this.internalCanvasContext = html.getContext('2d')
+    this.internalCanvas = document.createElement('canvas')
+    this.internalCanvasContext = this.internalCanvas.getContext('2d')
   }
 }
 
@@ -263,6 +276,7 @@ class Canvas {
   pushLayer(layer: Layer) {
     this.layers.push(layer)
     layer.setZIndex(this.getExtremeZIndex(true) + 1)
+
     this.drawLayers() // 绘制屏幕
     this.drawOverlay()
   }
@@ -300,7 +314,6 @@ class Canvas {
       // 如果层级太低 加大一点
       layer.setZIndex(maxZIndex + 1)
       this.drawLayers()
-      this.drawOverlay()
     }
   }
 
@@ -328,8 +341,6 @@ class Canvas {
   @autobind
   handleWheel(event: WheelEvent) {
     event.preventDefault()
-
-    // const { x: cx, y: cy } = this.domRect
     const { offsetX, offsetY, deltaY } = event
 
     // 鼠标的相对位置
@@ -410,7 +421,6 @@ class Canvas {
   @autobind
   handleKeyDown(event: KeyboardEvent) {
     event.preventDefault()
-    console.log('KeyDown', event)
     if (this.activeLayer == null) {
       return
     }
@@ -427,22 +437,18 @@ class Canvas {
         break
 
       case 'ArrowUp': // 上
-        console.log('ArrowUp')
         this.activeLayer.setPosition({ x, y: y - 1 })
         break
 
       case 'ArrowDown': // 下
-        console.log('ArrowDown')
         this.activeLayer.setPosition({ x, y: y + 1 })
         break
 
       case 'ArrowLeft': // 左
-        console.log('ArrowLeft')
         this.activeLayer.setPosition({ x: x - 1, y })
         break
 
       case 'ArrowRight': // 右
-        console.log('ArrowRight')
         this.activeLayer.setPosition({ x: x + 1, y })
         break
     }
@@ -500,7 +506,7 @@ class Canvas {
 
   // 获取 layer 的全部交集
   getLayerJionRects(): JionRect[] {
-    const rectSet: JionRect[] = []
+    let rectSet: JionRect[] = []
     // 求交集面积
     this.layers.forEach(layer => {
       this.layers.forEach((tLayer => {
@@ -525,30 +531,34 @@ class Canvas {
         rect.height = Math.min(laterSize.height + layer.y, tLayerSize.height + tLayer.y) - rect.y
 
         if (rect.width > 0 && rect.height > 0) {
-          rectSet.push(rect)
+          // 去重
+          if (!rectSet.some(hasRect =>
+            hasRect.x === rect.x
+            && hasRect.y === rect.y
+            && hasRect.width === rect.width
+            && hasRect.height === rect.height
+          )) {
+            rectSet.push(rect)
+          }
         }
       }))
     })
 
-    for (let index = 0; index < rectSet.length; index++) {
-      const rect = rectSet[index]
-      // 去重
-      if (!rectSet.includes(rect, index)) {
-        rectSet.splice(index, 1)
-      }
-    }
-
     // 取色块
-    return rectSet.map(rect => ({
-      ...rect,
-      imageDatas: this.layers.map(
-        layer => layer.getImageData({
-          ...rect,
-          x: rect.x - layer.x,
-          y: rect.y - layer.y
-        })
-      ).filter(Boolean)
-    }))
+    const data = rectSet
+      .map(rect => ({
+        ...rect,
+        imageDatas: this.layers.map(
+          layer => {
+            const _rect = { ...rect }
+            _rect.x = rect.x - layer.x
+            _rect.y = rect.y - layer.y
+            return layer.getImageData(_rect)
+          }
+        ).filter(Boolean)
+      }))
+
+    return data
   }
 
   // 清空画布
@@ -564,9 +574,6 @@ class Canvas {
   @debounce(1000 / 120) drawLayers() {
     this.clearCanvas()
     const layers = this.getSortedLayers(false)
-
-    console.log(layers)
-
     for (let index = 0; index < layers.length; index++) {
       const layer = layers[index]
       const isActive = this.activeLayer === layer
@@ -603,8 +610,8 @@ export function Playground() {
 
   return (
     <canvas
+      width="652"
       height="400"
-      width="676"
       tabIndex={1}
       ref={canvasRef}
       className={styles.canvas}
