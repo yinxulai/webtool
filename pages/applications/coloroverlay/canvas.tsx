@@ -204,6 +204,7 @@ class ImageLayer extends Layer {
   }
 
   // TODO: 核心难点了...
+  // 还没有处理完
   getImageData(rect: Rect): ImageData {
     const { x, y, width, height } = rect
 
