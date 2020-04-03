@@ -1,3 +1,5 @@
+import autobind from 'react-pitaya/lib/helper/autobind'
+
 // 二维的方向
 export class Direction {
   value: number
@@ -131,14 +133,19 @@ class BaseBody {
 
   // 计算力与方向
   computeEnergyAndDirection() {
-    const crent = new BasePower()
+    this.cleanBouncePower()
+    this.cleanExternalPower()
+
+    const p = new BasePower()
     // 先放入重力
-    crent.cross(this.gravity)
+    p.cross(this.gravity)
 
     // 计算外来力
     this.externalPower.map(power => {
-      crent.cross(power)
+      p.cross(power)
     })
+
+    console.log(p)
   }
 }
 
@@ -183,28 +190,38 @@ export class World {
   }
 
   // 计算世界
+  @autobind
   compute() {
-    // 计算每个物体的方向和力
-    this.bodys.forEach(body => {
-      body.computeEnergyAndDirection()
-    })
+    if (this.runing) {
+      // 计算每个物体的方向和力
+      this.bodys.forEach(body => {
+        body.computeEnergyAndDirection()
+      })
+    }
+  }
+
+  // 销毁
+  @autobind destroy() {
+    this.bodys = null
+    this.states = null
   }
 
   // 暂停世界
-  stop() {
+  @autobind stop() {
     if (!this.runing) {
       return console.warn('世界没有运行')
     }
 
+    this.runing = false
     cancelAnimationFrame(this.animationFrame)
   }
   // 启动世界
-  run() {
+  @autobind run() {
     if (this.runing) {
       return console.warn('世界正在运行')
     }
 
-    this.animationFrame = requestAnimationFrame(this.compute)
     this.runing = true
+    this.animationFrame = requestAnimationFrame(this.compute)
   }
 }
