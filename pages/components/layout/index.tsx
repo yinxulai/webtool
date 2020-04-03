@@ -51,12 +51,10 @@ export const Layout: React.FC<React.PropsWithChildren<Props>> = (props) => {
   return (
     <Container className={[styles.layout]}>
       {/* 应用 */}
+      <AppHeader {...props.info} />
       <div className={styles.content}>
-        <AppHeader {...props.info} />
         <div className={styles.card}>
-          <div className={styles.cardWrap}>
-            {props.children}
-          </div>
+          {props.children}
         </div>
       </div>
       {/* 推荐 */}
