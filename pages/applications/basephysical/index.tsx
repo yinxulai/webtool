@@ -6,9 +6,15 @@ import { Layout } from '../../components/layout'
 
 export default function render(_: AppProps) {
   const [world] = React.useState(new physical.World())
+
   React.useEffect(() => {
-    world.run()
-    return () => world.stop()
+    world.run();
+    (window as any).wrold = world
+
+    return () =>{
+      console.log('stop')
+      world.stop()
+    }
   }, [world])
 
   const addRigidBody = () => {

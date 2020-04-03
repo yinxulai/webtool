@@ -54,6 +54,11 @@ export class Power {
     // 力的大小就是两者相加然后损失去一些
     this.energy.value = (e + te) * (1 - 0.3) // 损失 0.3
   }
+
+  // 损失
+  loss(factor: number = 0.01) {
+    this.energy.value - this.energy.value * factor
+  }
 }
 
 export class BasePower extends Power {
@@ -108,7 +113,6 @@ class BaseBody {
     this.bouncePower = []
   }
 
-
   // 清理弹力
   cleanBouncePower() {
     this.bouncePower = this.bouncePower
@@ -142,10 +146,9 @@ class BaseBody {
 
     // 计算外来力
     this.externalPower.map(power => {
-      p.cross(power)
+      p.cross(power) // 加入
+      p.loss(0.01) // 损失
     })
-
-    console.log(p)
   }
 }
 
@@ -191,11 +194,15 @@ export class World {
 
   // 计算世界
   @autobind
-  compute() {
+  compute(_time?: number) {
     if (this.runing) {
-      // 计算每个物体的方向和力
-      this.bodys.forEach(body => {
-        body.computeEnergyAndDirection()
+      this.animationFrame = requestAnimationFrame(time => {
+        // 计算每个物体的方向和力
+        this.bodys.forEach(body => {
+          body.computeEnergyAndDirection()
+        })
+        // 继续下次
+        this.compute(time)
       })
     }
   }
@@ -208,6 +215,8 @@ export class World {
 
   // 暂停世界
   @autobind stop() {
+    console.log('stop')
+
     if (!this.runing) {
       return console.warn('世界没有运行')
     }
@@ -217,11 +226,13 @@ export class World {
   }
   // 启动世界
   @autobind run() {
+    console.log('run')
+
     if (this.runing) {
       return console.warn('世界正在运行')
     }
 
     this.runing = true
-    this.animationFrame = requestAnimationFrame(this.compute)
+    this.compute(Date.now())
   }
 }
