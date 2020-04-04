@@ -159,6 +159,16 @@ export default function render(_props: AppProps) {
     <Container
       className={[styles.selectsort]}
     >
+      <MarkDown>
+        #### 导言
+      </MarkDown>
+      <MarkDown>
+        选择排序的可视化，你可以输入不同的数据长度进行步骤的生成和演示
+        （有不选择排序的复杂度为 `O(n*n)` 因此无法输入过大的数值，因为过大的数值会导致步骤呈指数级增加）
+      </MarkDown>
+      <MarkDown>
+       可以通过慢速的拖动播放器进度来仔细观察每一步的步骤，从而更好的理解选择排序的本质。
+      </MarkDown>
       <StepPlayer
         playSpeed={50}
         autoloop={true}
@@ -175,9 +185,6 @@ export default function render(_props: AppProps) {
         />
         <Button onClick={reGenerateSteps}>生成排序过程</Button>
       </div>
-      <MarkDown>
-        > 其实不会太明显
-      </MarkDown>
     </Container>
   )
 }
