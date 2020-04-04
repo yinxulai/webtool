@@ -10,7 +10,15 @@ export default function render(_: AppProps) {
     <Layout info={appInfo}>
       <Container>
         <MarkDown>
-          PS 中
+          #### - 导言
+        </MarkDown>
+        <MarkDown>
+          在 PhotoShop 中有一项很重要的功能，叫做图层叠加模式，可能设计小伙伴在对位图的编辑中可能会经常用到，
+          今天我们就从另一个角度来带大家认识一下在 PS 中几个常见的模式的本质。同时在本页的 `Playground` 中你可以对
+          文中的几个常见模式进行验证和尝试。
+        </MarkDown>
+        <MarkDown>
+          #### - 变暗
         </MarkDown>
         <Playground />
         <MarkDown>

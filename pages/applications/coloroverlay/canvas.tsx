@@ -152,14 +152,12 @@ class Overlay extends Layer {
           // Alpha 通道
           return 255   // 不透明
         }
-
-        return 255 - this.imageDatas[0].data[index]
         
         const _valueSet = this.imageDatas.map(image => {
           return image.data[index]
         })
 
-        return Math.max(..._valueSet)
+        return 255 - Math.max(..._valueSet)
       })
 
     createImageBitmap(
@@ -252,7 +250,6 @@ class ImageLayer extends Layer {
     this.internalCanvasContext = this.internalCanvas.getContext('2d')
   }
 }
-
 class Canvas {
   width: number // 画布宽高
   height: number // 画布宽高
