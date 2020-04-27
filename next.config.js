@@ -1,28 +1,26 @@
-module.exports = require('@zeit/next-css')({
-  cssModules: false,
-  cssLoaderOptions: {
-    localIdentName: "[local]-[hash:base64:5]",
-  }
-})
+/* eslint-disable @typescript-eslint/no-var-requires */
+const less = require('@zeit/next-less')
 
-// less
-module.exports = require('@zeit/next-less')({
+const config = {
+  webpack: (config) => {
+
+    const eslintRule = {
+      test: /.tsx?$/,
+      enforce: 'pre',
+      loader: 'eslint-loader',
+      exclude: /node_modules/,
+    }
+
+    config.module.rules.push(eslintRule)
+
+    return config
+  }
+}
+
+module.exports = less({
   cssModules: true,
   cssLoaderOptions: {
     localIdentName: "[local]:[hash:base64:5]",
-  }
+  },
+  ...config
 })
-
-// module.exports = require('@zeit/next-stylus')({
-//   cssModules: true,
-//   cssLoaderOptions: {
-//     localIdentName: "[local]:[hash:base64:5]",
-//   }
-// })
-
-// 关注 css 引入问题 https://github.com/zeit/next-plugins/issues/273
-// next-css-unpluggable 社区插件 后面考虑移除
-// module.exports = require('next-css-unpluggable')({
-//   /* config options here */
-// })
-

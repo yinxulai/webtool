@@ -1,10 +1,10 @@
-// declare module '*.styl' {
-//   const cssModuleExport: {
-//     [className: string]: string
-//   }
+declare module '*.styl' {
+  const cssModuleExport: {
+    [className: string]: string
+  }
 
-//   export = cssModuleExport
-// }
+  export = cssModuleExport
+}
 
 declare module '*.less' {
     const cssModuleExport: {

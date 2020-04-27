@@ -6,7 +6,6 @@ declare interface AppInfo {
   backgroundColor: string
 }
 
-
 declare interface AppProps {
 
 }

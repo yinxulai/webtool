@@ -1,5 +1,6 @@
 import next from 'next'
 import 'reflect-metadata'
+import path from 'path'
 import express from 'express'
 import session from './plugins/session'
 import Account from './controller/account'
@@ -7,13 +8,19 @@ import { isDevelop } from '../utils/node'
 import currentUser from './plugins/currentUser'
 import { useExpressServer } from 'routing-controllers'
 
+const rootDir = path.join(__dirname, '../front')
 
 const server = express()
 const isDev = isDevelop()
 const nextServer = next({ dev: isDev })
-const handle = nextServer.getRequestHandler()
 const port = parseInt(process.env.PORT || '3000', 10)
-useExpressServer(server, { development: isDev, controllers: [Account], currentUserChecker: currentUser })
+const handle = nextServer.getRequestHandler()
+
+useExpressServer(server, {
+  development: isDev,
+  controllers: [Account],
+  currentUserChecker: currentUser
+})
 
 // 启动特别慢、考虑挪走
 nextServer.prepare().then(() => {
